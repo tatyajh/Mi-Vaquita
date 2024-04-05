@@ -1,4 +1,4 @@
-import { getAllGroupsService, createGroupService, updateGroupService, deleteGroupService } from '../services/groups.service.js';  // Asegúrate de que la ruta aquí sea correcta
+import { getAllGroupsService, createGroupService, updateGroupService, deleteGroupService } from '../services/groups.service.js'; 
 
 export const getGroups = async (req, res) => {
     const groups = await getAllGroupsService();
