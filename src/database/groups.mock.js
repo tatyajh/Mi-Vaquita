@@ -1,6 +1,6 @@
 const groups = [
-    { id: 1, name: 'Grupo 1', description: 'Este es el grupo 1' },
-    { id: 2, name: 'Grupo 2', description: 'Este es el grupo 2' }
+    { id: 1, name: 'Grupo 1', color: 'azul' },
+    { id: 2, name: 'Grupo 2', color: 'rojo' }
 ];
 
 export default groups;
