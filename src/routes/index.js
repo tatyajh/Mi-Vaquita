@@ -3,9 +3,9 @@ import { getGroups, createGroup, updateGroup, deleteGroup } from '../controllers
 
 const router = express.Router();
 
-router.get('/groups', getGroups);
-router.post('/groups', createGroup);
-router.put('/groups/:id', updateGroup);
-router.delete('/groups/:id', deleteGroup);
+router.get('/', getGroups); 
+router.post('/', createGroup);  
+router.put('/:id', updateGroup);  
+router.delete('/:id', deleteGroup); 
 
 export default router;
