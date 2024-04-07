@@ -9,11 +9,11 @@ app.use(express.json());
 app.use('/api/groups', groupRoutes);
 
 app.use((req, res, next) => {
-  console.log(`Solicitud recibida: ${req.method} ${req.url}`);
+  console.log(`Request: ${req.method} ${req.url}`);
   next();
 });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

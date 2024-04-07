@@ -1,11 +1,18 @@
-import express from 'express';
-import { getGroups, createGroup, updateGroup, deleteGroup } from '../controllers/groups.controller.js';  // Asegúrate de que la ruta aquí sea correcta
+import express from "express";
+import {
+  getAllGroupsController,
+  getByIdGroupsController,
+  createGroupsController,
+  editByIdGroupsController,
+  removeByIdGroupsController,
+} from "../controllers/groups.controller.js";
 
 const router = express.Router();
 
-router.get('/', getGroups); 
-router.post('/', createGroup);  
-router.put('/:id', updateGroup);  
-router.delete('/:id', deleteGroup); 
+router.get("/", getAllGroupsController);
+router.get("/:id", getByIdGroupsController);
+router.post("/", createGroupsController);
+router.put("/:id", editByIdGroupsController);
+router.delete("/:id", removeByIdGroupsController);
 
 export default router;
