@@ -8,9 +8,10 @@ const Model = () => {
   const getByIdGroupsModel = (id) => {
     return groups.find((entity) => entity.id === id);
   };
+  
 
   const createGroupsModel = (data) => {
-    const newGroup = { id: groups.length + 1, ...data };
+    const newGroup = { id: (groups.length + 1).toString(), ...data };
     groups.push(newGroup);
     return newGroup;
   };
@@ -28,10 +29,12 @@ const Model = () => {
     const index = groups.findIndex((group) => group.id === id);
     if (index !== -1) {
       groups.splice(index, 1);
-      return true;
+      return { message: `Group with id ${id} was deleted successfully.` };
+    } else {
+      return null;
     }
-    return false;
   };
+  
 
   return {
     getAllGroupsModel,

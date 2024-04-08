@@ -26,12 +26,12 @@ export const createGroupsController = (req, res) => {
 
 export const editByIdGroupsController = (req, res) => {
   const { id } = req.params;
-  const updatedGroup = groupService.editById(id, req.body);
+  const updatedGroup = groupService.editById(req.params.id, req.body);
 
   if (!updatedGroup) {
     return res
       .status(404)
-      .json({ message: `Group with id ${id} does not exist` });
+      .json({ message: `Group with id ${req.params.id} does not exist` });
   }
 
   res.json(updatedGroup);
@@ -40,12 +40,9 @@ export const editByIdGroupsController = (req, res) => {
 export const removeByIdGroupsController = (req, res) => {
   const { id } = req.params;
   const result = groupService.removeById(id);
-
-  if (!result) {
-    return res
-      .status(404)
-      .json({ message: `Group with id ${id} does not exist` });
+  if (result) {
+      res.status(200).json(result);
+  } else {
+      res.status(404).json({ message: `Group with id ${id} does not exist` });
   }
-
-  res.status(204).send();
 };
