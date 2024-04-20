@@ -8,9 +8,14 @@ const Model = () => {
   const getByIdGroupsModel = (id) => {
     return groups.find((entity) => entity.id === id);
   };
-  
 
   const createGroupsModel = (data) => {
+    const existingGroup = groups.find(
+      (group) => group.name.toLowerCase() === data.name.toLowerCase()
+    );
+    if (existingGroup) {
+      throw new Error('Group name already exists');
+    }
     const newGroup = { id: (groups.length + 1).toString(), ...data };
     groups.push(newGroup);
     return newGroup;
@@ -34,7 +39,6 @@ const Model = () => {
       return null;
     }
   };
-  
 
   return {
     getAllGroupsModel,

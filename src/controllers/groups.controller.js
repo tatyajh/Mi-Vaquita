@@ -20,8 +20,15 @@ export const getByIdGroupsController = (req, res) => {
 };
 
 export const createGroupsController = (req, res) => {
-  const newGroup = groupService.create(req.body);
-  res.status(201).json(newGroup);
+  try {
+    const newGroup = groupService.create(req.body);
+    res.status(201).json(newGroup);
+  } catch (error) {
+    if (error.message === 'Group name already exists') {
+      return res.status(409).json({ message: 'El nombre del grupo ya existe' });
+    }
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export const editByIdGroupsController = (req, res) => {
@@ -41,8 +48,8 @@ export const removeByIdGroupsController = (req, res) => {
   const { id } = req.params;
   const result = groupService.removeById(id);
   if (result) {
-      res.status(200).json(result);
+    res.status(200).json(result);
   } else {
-      res.status(404).json({ message: `Group with id ${id} does not exist` });
+    res.status(404).json({ message: `Group with id ${id} does not exist` });
   }
 };
