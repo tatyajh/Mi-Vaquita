@@ -1,4 +1,4 @@
-import express from "express";
+import Router from 'express-promise-router';
 import {
   getAllGroupsController,
   getByIdGroupsController,
@@ -7,7 +7,7 @@ import {
   removeByIdGroupsController,
 } from "../controllers/groups.controller.js";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", getAllGroupsController);
 router.get("/:id", getByIdGroupsController);
