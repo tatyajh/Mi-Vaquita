@@ -5,7 +5,7 @@ Este proyecto sigue una arquitectura de 3 capas, que es una forma de estructurar
 ## Estructura de archivos
 
 - **app.js**: Configura y ejecuta la aplicación.
-- **routes/index.js**: Define los endpoints y los asocia a las funciones del controlador.
+- **routes/groups.router.js**: Define los endpoints y los asocia a las funciones del controlador.
 - **controllers/groups.controller.js**: Contiene la lógica de control de las peticiones HTTP relacionadas con grupos.
 - **service/groups.service.js**: Contiene la lógica de negocio y las operaciones de datos.
 
