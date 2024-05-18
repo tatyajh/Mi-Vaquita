@@ -1,9 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import groupRoutes from './routes/groups.router.js'; 
-
-dotenv.config();
+import userRoutes from './routes/users.router.js';
 
 const app = express();
 app.use(cors());
@@ -15,6 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/groups', groupRoutes); 
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

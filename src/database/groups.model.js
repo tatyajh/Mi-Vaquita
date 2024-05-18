@@ -1,55 +1,47 @@
-import pool from '../lib/connection.js';
+import pool from "../lib/connection.js";
 
-const Model = () => {
-
+const GroupsModel = () => {
   const getAllGroupsModel = async () => {
-    const { rows } = await pool.query('SELECT * FROM groups');
-    return rows;
+    const client = await pool.connect();
+    const result = await client.query("SELECT * FROM GROUPS");
+    client.release();
+    return result.rows;
   };
 
   const getByIdGroupsModel = async (id) => {
-    const { rows } = await pool.query('SELECT * FROM groups WHERE id = $1', [id]);
-    return rows[0];
+    const client = await pool.connect();
+    const result = await client.query("SELECT * FROM GROUPS WHERE ID = $1", [
+      id,
+    ]);
+    client.release();
+    return result.rows[0];
   };
 
   const createGroupsModel = async (data) => {
-    const { ownerUserId, name, color, createdAt } = data;
-    try {
-        const { rows } = await pool.query(
-            'INSERT INTO groups (ownerUserId, name, color, createdAt) VALUES ($1, $2, $3, $4) RETURNING *',
-            [ownerUserId, name, color, createdAt]
-        );
-        return rows[0];
-    } catch (error) {
-        console.error('Error creating group:', error);
-        throw error;
-    }
-};
+    const client = await pool.connect();
+    const result = await client.query(
+      "INSERT INTO GROUPS (owneruserid, name, color, CREATEDAT) VALUES ($1, $2, $3, NOW()) RETURNING *",
+      [data.ownerUserId, data.name, data.color]
+    );
+    client.release();
+    return result.rows[0];
+  };
 
   const updateGroupsModel = async (id, data) => {
-    const { name, color } = data;  
-    try {
-        const { rows } = await pool.query(
-            'UPDATE groups SET name = $1, color = $2 WHERE id = $3 RETURNING *',
-            [name, color, id] 
-        );
-        if (rows.length === 0) {
-            return null;
-        }
-        return rows[0];
-    } catch (error) {
-        console.error('Error updating group:', error);
-        throw error;
-    }
-};
-
+    const client = await pool.connect();
+    const result = await client.query(
+      "UPDATE GROUPS set name = $1, color = $2 WHERE id = $3 RETURNING *",
+      [data.name, data.color, id]
+    );
+    client.release();
+    return result.rows[0];
+  };
 
   const deleteGroupsModel = async (id) => {
-    const { rows } = await pool.query('DELETE FROM groups WHERE id = $1 RETURNING id', [id]);
-    if (rows.length === 0) {
-      return null;
-    }
-    return { message: `Group with id ${id} was deleted successfully.` };
+    const client = await pool.connect();
+    const result = await client.query("DELETE FROM GROUPS WHERE id = $1", [id]);
+    client.release();
+    return result.rowCount >= 1;
   };
 
   return {
@@ -61,4 +53,4 @@ const Model = () => {
   };
 };
 
-export default Model;
+export default GroupsModel;

@@ -1,56 +1,68 @@
 import GroupService from "../services/groups.service.js";
+import { StatusCodes } from 'http-status-codes';
+import { NotFoundException, ConflictException } from '../validations/groups.validations.js';
 
 const groupService = GroupService();
 
 export const getAllGroupsController = async (req, res) => {
-  const groups = await groupService.getAll();
-  res.json(groups);
+  try {
+    const groups = await groupService.getAll();
+    res.status(StatusCodes.OK).json(groups);
+  } catch (error) {
+    console.error('Failed to get groups:', error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+  }
 };
 
 export const getByIdGroupsController = async (req, res) => {
-  const group = await groupService.getById(req.params.id);
-
-  if (!group) {
-    return res.status(404).json({ message: `Group with id ${req.params.id} does not exist` });
+  try {
+    const group = await groupService.getById(req.params.id);
+    res.status(StatusCodes.OK).json(group);
+  } catch (error) {
+    if (error instanceof NotFoundException) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
+    }
+    console.error(`Failed to get group with id ${req.params.id}:`, error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
   }
-
-  return res.status(200).json(group);
 };
 
 export const createGroupsController = async (req, res) => {
   const { ownerUserId, name, color } = req.body;
-  const createdAt = new Date().toISOString().slice(0, 10); // Use current date for 'createdAt'
-
-  if (!ownerUserId || !name || !color) {
-      return res.status(400).json({ message: "Missing required fields" });
-  }
-
   try {
-      const newGroup = await groupService.createGroupsModel(ownerUserId, name, color, createdAt);
-      res.status(201).json(newGroup);
+      const newGroup = await groupService.create({ ownerUserId, name, color });
+      res.status(StatusCodes.CREATED).json(newGroup);
   } catch (error) {
       console.error('Failed to create group:', error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message || "Internal server error" });
   }
 };
 
+
 export const editByIdGroupsController = async (req, res) => {
-  const { id } = req.params;
-  const updatedGroup = await groupService.editById(req.params.id, req.body);
-
-  if (!updatedGroup) {
-    return res.status(404).json({ message: `Group with id ${req.params.id} does not exist` });
+  try {
+    const { id } = req.params;
+    const updatedGroup = await groupService.editById(id, req.body);
+    res.status(StatusCodes.OK).json(updatedGroup);
+  } catch (error) {
+    if (error instanceof NotFoundException) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
+    }
+    console.error(`Failed to update group with id ${id}:`, error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
   }
-
-  res.json(updatedGroup);
 };
 
 export const removeByIdGroupsController = async (req, res) => {
-  const { id } = req.params;
-  const result = await groupService.removeById(id);
-  if (result) {
-    res.status(200).json(result);
-  } else {
-    res.status(404).json({ message: `Group with id ${id} does not exist` });
+  try {
+    const { id } = req.params;
+    await groupService.removeById(id);
+    res.status(StatusCodes.OK).json({ message: 'Group deleted successfully' });
+  } catch (error) {
+    if (error instanceof NotFoundException) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
+    }
+    console.error(`Failed to remove group with id ${id}:`, error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
   }
 };
