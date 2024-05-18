@@ -15,10 +15,6 @@ app.use((req, res, next) => {
 app.use('/api/groups', groupRoutes); 
 app.use('/api/users', userRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

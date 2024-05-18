@@ -12,11 +12,9 @@ const GroupService = () => {
     if (error) {
       throw new Error(error.details[0].message);
     }
-
     if (!newGroup.ownerUserId) {
       newGroup.ownerUserId = 1; // Valor temporal hasta que se implemente la gestión de usuarios
     }
-
     return groupModel.createGroupsModel(newGroup);
   };
 

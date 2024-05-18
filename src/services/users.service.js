@@ -1,27 +1,48 @@
-import UserModel from '../database/users.model.js';
-import bcrypt from 'bcryptjs';
+import UsersModel from "../database/users.model.js";
+import {
+  ConflictException,
+  NotFoundException,
+  validateUser,
+} from "../validations/users.validations.js";
+import bcrypt from 'bcrypt';
 
 const UserService = () => {
-  const userModel = UserModel();
+  const userModel = UsersModel();
 
-  const createUser = async ({ name, email, password }) => {
-    const existingUser = await userModel.getUserByEmail(email);
-    if (existingUser) {
-      throw new Error('Email already exists');
+  const create = async (newUser) => {
+    const { error } = validateUser(newUser);
+    if (error) {
+      throw new Error(error.details[0].message);
     }
-    
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userModel.createUser({
-      name,
-      email,
-      password: hashedPassword,
-      createdAt: new Date().toISOString().slice(0, 10)
-    });
+    const existingUser = await userModel.getByUsersEmailModel(newUser.email);
+    if (existingUser) {
+      throw new ConflictException('Este correo ya existe');
+    }
+    newUser.password = await bcrypt.hash(newUser.password, 10);
+    newUser.createdAt = new Date().toISOString().slice(0, 10); 
+    return userModel.createUsersModel(newUser);
+  };
+
+  const getById = async (id) => {
+    const user = await userModel.getByIdUsersModel(id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} does not exist`);
+    }
+    return user;
+  };
+
+  const getByEmail = async (email) => {
+    const user = await userModel.getByUsersEmailModel(email);
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} does not exist`);
+    }
     return user;
   };
 
   return {
-    createUser,
+    create,
+    getById,
+    getByEmail,
   };
 };
 

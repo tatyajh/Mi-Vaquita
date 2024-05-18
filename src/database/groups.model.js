@@ -1,6 +1,7 @@
 import pool from "../lib/connection.js";
 
 const GroupsModel = () => {
+  
   const getAllGroupsModel = async () => {
     const client = await pool.connect();
     const result = await client.query("SELECT * FROM GROUPS");

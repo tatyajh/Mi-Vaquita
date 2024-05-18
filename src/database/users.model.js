@@ -3,38 +3,32 @@ import bcrypt from "bcrypt";
 
 const UsersModel = () => {
 
-const getByUsersEmail = async (email) => {
-    const client = await connectionPool.connect();
-    const result = await client.query("SELECT * FROM Users WHERE email = $1", [
-    email,
-    ]);
+const getByUsersEmailModel = async (email) => {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
     client.release();
     return result.rows[0];
 };
 
 const getByIdUsersModel = async (id) => {
     const client = await pool.connect();
-    const result = await client.query("SELECT * FROM Users WHERE id = $1", [
-    id,
-    ]);
+    const result = await client.query('SELECT * FROM users WHERE id = $1', [id]);
     client.release();
     return result.rows[0];
 };
 
 const createUsersModel = async (data) => {
-    user.password = await bcrypt.hash(user.password, 10);
-    const { name, email, password } = user;
-    const client = await connectionPool.connect();
+    const client = await pool.connect();
     const result = await client.query(
-      "INSERT INTO Users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
-    [name, email, password]
+      'INSERT INTO users (name, email, password, createdAt) VALUES ($1, $2, $3, NOW()) RETURNING *',
+      [data.name, data.email, data.password]
     );
     client.release();
     return result.rows[0];
 };
 
 return {
-    getByUsersEmail,
+    getByUsersEmailModel,
     getByIdUsersModel,
     createUsersModel,
 };
