@@ -15,19 +15,15 @@ class NotFoundException extends Error {
   }
 }
 
-const validateUser = (userData) => {
+const validateUser = (user) => {
   const schema = Joi.object({
-    name: Joi.string().trim().max(100).required(),
-    email: Joi.string().trim().email().required(),
-    password: Joi.string()
-      .trim()
-      .min(8)
-      .regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-      .required(),
-    createdAt: Joi.date().optional(),
+    name: Joi.string().min(3).max(100).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().pattern(new RegExp('^(?=.*[a-z])(?=.*[0-9])')).required(),
   });
 
-  return schema.validate(userData);
+  return schema.validate(user);
 };
+
 
 export { ConflictException, NotFoundException, validateUser };

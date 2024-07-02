@@ -1,10 +1,6 @@
-import UsersModel from "../database/users.model.js";
-import {
-  ConflictException,
-  NotFoundException,
-  validateUser,
-} from "../validations/users.validations.js";
+import UsersModel from '../database/users.model.js';
 import bcrypt from 'bcrypt';
+import { ConflictException, NotFoundException, validateUser } from '../validations/users.validations.js';
 
 const UserService = () => {
   const userModel = UsersModel();
@@ -19,7 +15,7 @@ const UserService = () => {
       throw new ConflictException('Este correo ya existe');
     }
     newUser.password = await bcrypt.hash(newUser.password, 10);
-    newUser.createdAt = new Date().toISOString().slice(0, 10); 
+    newUser.createdAt = new Date().toISOString().slice(0, 10);
     return userModel.createUsersModel(newUser);
   };
 

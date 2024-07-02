@@ -1,6 +1,6 @@
-import passport from "passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-import UsersModel from "../database/users.model.js";
+import passport from 'passport';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
+import UsersModel from '../database/users.model.js';
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -8,18 +8,19 @@ const options = {
 };
 
 passport.use(
-  new Strategy(options, async function (jwt_payload, done) {
+  new JwtStrategy(options, async (jwt_payload, done) => {
     try {
-      const user = await UsersModel().getById(jwt_payload.id);
-      delete user.password;
-      delete user.createdat;
+      const user = await UsersModel().getByIdUsersModel(jwt_payload.id);
       if (user) {
+        delete user.password; 
         return done(null, user);
       } else {
         return done(null, false);
       }
-    } catch (e) {
-      return done(e);
+    } catch (error) {
+      return done(error, false);
     }
   })
 );
+
+export default passport;
