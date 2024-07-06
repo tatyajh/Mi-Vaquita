@@ -46,14 +46,22 @@ const GroupsModel = () => {
   const addParticipants = async (groupId, participantIds) => {
     const client = await pool.connect();
     try {
-      const insertValues = participantIds.map(userId => `(${groupId}, ${userId})`).join(',');
-      const query = `INSERT INTO GroupParticipants (group_id, user_id) VALUES ${insertValues}`;
-      await client.query(query);
+      const existingParticipantsQuery = `SELECT user_id FROM GroupParticipants WHERE group_id = $1 AND user_id = ANY($2::int[])`;
+      const existingParticipantsResult = await client.query(existingParticipantsQuery, [groupId, participantIds]);
+  
+      const existingParticipantIds = existingParticipantsResult.rows.map(row => row.user_id);
+      const newParticipantIds = participantIds.filter(id => !existingParticipantIds.includes(id));
+  
+      if (newParticipantIds.length > 0) {
+        const insertValues = newParticipantIds.map(userId => `(${groupId}, ${userId})`).join(',');
+        const query = `INSERT INTO GroupParticipants (group_id, user_id) VALUES ${insertValues}`;
+        await client.query(query);
+      }
     } finally {
       client.release();
     }
   };
-
+  
   const getParticipants = async (groupId) => {
     const client = await pool.connect();
     try {
