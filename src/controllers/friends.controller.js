@@ -25,9 +25,9 @@ export const addFriendController = async (req, res) => {
 };
 
 export const deleteFriendController = async (req, res) => {
-  const { userId, friendUserId } = req.body;
+  const { friendId } = req.params;
   try {
-    const deleted = await friendsService.deleteFriend(userId, friendUserId);
+    const deleted = await friendsService.deleteFriend(friendId);
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: 'Friend not found' });
     }

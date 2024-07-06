@@ -15,12 +15,8 @@ const FriendsService = () => {
     return friendsModel.createFriendsModel({ userId, friendUserId });
   };
 
-  const deleteFriend = async (userId, friendUserId) => {
-    const existingFriend = await friendsModel.getByUserIdAndFriendUserId(userId, friendUserId);
-    if (!existingFriend) {
-      throw new Error('Friend not found');
-    }
-    return friendsModel.deleteFriendsModel(existingFriend.id);
+  const deleteFriend = async (friendId) => {
+    return friendsModel.deleteFriendsModel(friendId);
   };
 
   return {
