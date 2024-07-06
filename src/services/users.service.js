@@ -5,6 +5,10 @@ import { ConflictException, NotFoundException, validateUser } from '../validatio
 const UserService = () => {
   const userModel = UsersModel();
 
+  const getAll = async () => {
+    return userModel.getAllUsersModel();
+  };
+
   const create = async (newUser) => {
     const { error } = validateUser(newUser);
     if (error) {
@@ -39,6 +43,7 @@ const UserService = () => {
     create,
     getById,
     getByEmail,
+    getAll, 
   };
 };
 

@@ -30,14 +30,13 @@ export const getByIdGroupsController = async (req, res) => {
 export const createGroupsController = async (req, res) => {
   const { ownerUserId, name, color } = req.body;
   try {
-      const newGroup = await groupService.create({ ownerUserId, name, color });
-      res.status(StatusCodes.CREATED).json(newGroup);
+    const newGroup = await groupService.create({ ownerUserId, name, color });
+    res.status(StatusCodes.CREATED).json(newGroup);
   } catch (error) {
-      console.error('Failed to create group:', error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message || "Internal server error" });
+    console.error('Failed to create group:', error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message || "Internal server error" });
   }
 };
-
 
 export const editByIdGroupsController = async (req, res) => {
   try {
@@ -64,5 +63,27 @@ export const removeByIdGroupsController = async (req, res) => {
     }
     console.error(`Failed to remove group with id ${id}:`, error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+  }
+};
+
+export const addGroupParticipantsController = async (req, res) => {
+  const { groupId, participantIds } = req.body;
+  try {
+    await groupService.addParticipants(groupId, participantIds);
+    res.status(StatusCodes.CREATED).json({ message: 'Participants added successfully' });
+  } catch (error) {
+    console.error('Error adding participants:', error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+  }
+};
+
+export const getGroupParticipantsController = async (req, res) => {
+  const { groupId } = req.params;
+  try {
+    const participants = await groupService.getParticipants(groupId);
+    res.status(StatusCodes.OK).json(participants);
+  } catch (error) {
+    console.error('Error getting participants:', error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
   }
 };

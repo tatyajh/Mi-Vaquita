@@ -30,3 +30,13 @@ export const createUserController = async (req, res) => {
     res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
   }
 };
+
+export const getAllUsersController = async (req, res) => {
+  try {
+    const users = await userService.getAll();
+    res.status(StatusCodes.OK).json(users);
+  } catch (error) {
+    console.error('Failed to get users:', error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+  }
+};

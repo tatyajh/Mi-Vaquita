@@ -1,6 +1,14 @@
+// src/database/users.model.js
 import pool from '../lib/connection.js';
 
 const UsersModel = () => {
+
+  const getAllUsersModel = async () => {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM users');
+    client.release();
+    return result.rows;
+  };
 
   const getByUsersEmailModel = async (email) => {
     const client = await pool.connect();
@@ -27,6 +35,7 @@ const UsersModel = () => {
   };
 
   return {
+    getAllUsersModel, 
     getByUsersEmailModel,
     getByIdUsersModel,
     createUsersModel,

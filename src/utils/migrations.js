@@ -18,6 +18,21 @@ const queries = [
     PRIMARY KEY(id),
     CONSTRAINT fk_groups_users_id FOREIGN KEY(ownerUserId) REFERENCES Users(id)
   );`,
+  `CREATE TABLE IF NOT EXISTS Friends (
+    id SERIAL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    createdAt DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id)
+  );`,
+  `CREATE TABLE IF NOT EXISTS GroupParticipants (
+    id SERIAL,
+    group_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT fk_group_participants_groups_id FOREIGN KEY(group_id) REFERENCES Groups(id),
+    CONSTRAINT fk_group_participants_users_id FOREIGN KEY(user_id) REFERENCES Friends(id)
+  );`,
   `INSERT INTO Users (name, email, password, createdAt) VALUES 
     ('miguel', 'miguel@gmail.com', 'password', '2023-01-02'),
     ('juan camilo', 'juancamilo@gmail.com', 'password', '2024-03-14'),
